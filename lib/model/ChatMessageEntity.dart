@@ -15,6 +15,7 @@ class ChatMessageEntity {
 
   factory ChatMessageEntity.fromJson(Map<String, dynamic> json) {
     return ChatMessageEntity(
+        imageURL: json['imageURL'],
         message: json["message"],
         createdAt: json["createdAt"],
         id: int.parse(json["id"]),
