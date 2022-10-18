@@ -1,0 +1,19 @@
+[
+  {
+    "message": "Hi there",
+    "createdAt": 123242342,
+    "id": "1",
+    "author": {
+      "name": "Stefan"
+    }
+  },
+  {
+    "message": "Hi there back",
+    "createdAt": 123242342,
+    "id": "2",
+    "author": {
+      "name": "Stef"
+    },
+    "imageURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Scoot_logo.svg/800px-Scoot_logo.svg.png"
+  }
+]
