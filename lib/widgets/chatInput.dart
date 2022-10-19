@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:linkedin/model/ChatMessageEntity.dart';
 
 class ChatInput extends StatelessWidget {
-  ChatInput({Key? key}) : super(key: key);
+  final Function onSubmit;
+  ChatInput({Key? key, required this.onSubmit}) : super(key: key);
 
   final _chatInputController = TextEditingController();
 
-  sendMessage() {
+  sendMessage(ChatMessageEntity newMessage) {
     print("message: ${_chatInputController.text}");
+    onSubmit(newMessage);
     _chatInputController.text = '';
   }
 
@@ -43,7 +46,13 @@ class ChatInput extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              sendMessage();
+              final newMessage = ChatMessageEntity(
+                message: _chatInputController.text,
+                createdAt: DateTime.now().microsecondsSinceEpoch,
+                id: 123,
+                author: Author(name: "Stefan"),
+              );
+              sendMessage(newMessage);
             },
             icon: const Icon(
               Icons.send,

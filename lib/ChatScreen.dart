@@ -55,6 +55,12 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  _onSubmitChatInput(ChatMessageEntity chatMessageEntity) {
+    setState(() {
+      _messages.add(chatMessageEntity);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final username = ModalRoute.of(context)!.settings.arguments as String;
@@ -88,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: _messages.length,
             ),
           ),
-          ChatInput(),
+          ChatInput(onSubmit: _onSubmitChatInput),
         ],
       ),
     );
