@@ -24,14 +24,21 @@ class ChatBubble extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              chatMessage.message,
-              style: const TextStyle(fontSize: 20, color: Colors.white),
-            ),
-            if (chatMessage.imageURL != null)
-              Image.network(
-                "${chatMessage.imageURL}",
-                height: 150,
+            if (chatMessage.message.isNotEmpty)
+              Text(
+                chatMessage.message,
+                style: const TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            if (chatMessage.imageURL != null &&
+                chatMessage.imageURL!.isNotEmpty)
+              Padding(
+                padding: chatMessage.message.isEmpty
+                    ? const EdgeInsets.only(top: 0)
+                    : const EdgeInsets.only(top: 10),
+                child: Image.network(
+                  "${chatMessage.imageURL}",
+                  height: 150,
+                ),
               ),
           ],
         ),

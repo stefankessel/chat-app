@@ -1,23 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:linkedin/model/ChatMessageEntity.dart';
+import 'package:linkedin/widgets/modalBottomImageContainer.dart';
 
-class ChatInput extends StatelessWidget {
+class ChatInput extends StatefulWidget {
   final Function onSubmit;
-  ChatInput({Key? key, required this.onSubmit}) : super(key: key);
+  //final Function(String) onImageSelected;
+  const ChatInput({Key? key, required this.onSubmit}) : super(key: key);
 
+  @override
+  State<ChatInput> createState() => _ChatInputState();
+}
+
+class _ChatInputState extends State<ChatInput> {
   final _chatInputController = TextEditingController();
+  String _imageSelected = "";
 
-  sendMessage(ChatMessageEntity newMessage) {
-    print("message: ${_chatInputController.text}");
-    onSubmit(newMessage);
-    _chatInputController.text = '';
+  _onSubmitMessage() {
+    if (_chatInputController.text.isNotEmpty || _imageSelected.isNotEmpty) {
+      final newMessage = ChatMessageEntity(
+        message: _chatInputController.text,
+        imageURL: _imageSelected,
+        createdAt: DateTime.now().microsecondsSinceEpoch,
+        id: 123,
+        author: Author(name: "Stefan"),
+      );
+      if (_imageSelected.isNotEmpty) {
+        newMessage.imageURL = _imageSelected;
+      }
+
+      widget.onSubmit(newMessage);
+
+      _chatInputController.clear();
+      _imageSelected = '';
+    }
+  }
+
+  _onImageSelected(String newImageURL) {
+    _imageSelected = newImageURL;
+    setState(() {});
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      height: 80,
       decoration: const BoxDecoration(
           color: Colors.black87,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -25,35 +52,45 @@ class ChatInput extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return ModalBottomImageContainer(
+                    onImageSelected: _onImageSelected,
+                  );
+                },
+              );
+            },
             icon: const Icon(
               Icons.add,
               color: Colors.white,
             ),
           ),
           Expanded(
-            child: TextField(
-              autofocus: true,
-              controller: _chatInputController,
-              textCapitalization: TextCapitalization.sentences,
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                border: InputBorder.none,
-                hintText: "Enter your Message here",
-                hintStyle: TextStyle(color: Colors.blueGrey),
-              ),
+            child: Column(
+              children: [
+                TextField(
+                  autofocus: true,
+                  controller: _chatInputController,
+                  textCapitalization: TextCapitalization.sentences,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Enter your Message here",
+                    hintStyle: TextStyle(color: Colors.blueGrey),
+                  ),
+                ),
+                if (_imageSelected.isNotEmpty)
+                  Image.network(
+                    _imageSelected,
+                    height: 100,
+                  ),
+              ],
             ),
           ),
           IconButton(
-            onPressed: () {
-              final newMessage = ChatMessageEntity(
-                message: _chatInputController.text,
-                createdAt: DateTime.now().microsecondsSinceEpoch,
-                id: 123,
-                author: Author(name: "Stefan"),
-              );
-              sendMessage(newMessage);
-            },
+            onPressed: () => _onSubmitMessage(),
             icon: const Icon(
               Icons.send,
               color: Colors.white,

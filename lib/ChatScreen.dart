@@ -1,8 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
+
 import 'package:linkedin/model/ChatMessageEntity.dart';
+import 'package:linkedin/model/ImageEntity.dart';
+import 'package:linkedin/repo/image_repository.dart';
 import 'package:linkedin/widgets/chatBubble.dart';
 import 'package:linkedin/widgets/chatInput.dart';
 
@@ -14,32 +16,14 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<ChatMessageEntity> _messages = [
-    /*
-    ChatMessageEntity(
-        message: "Hi there",
-        createdAt: 123242342,
-        id: 1,
-        author: Author(name: "Stefan")),
-    ChatMessageEntity(
-        message: "Hi there",
-        createdAt: 123242342,
-        id: 1,
-        imageURL:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Scoot_logo.svg/800px-Scoot_logo.svg.png",
-        author: Author(name: "Poja")),
-    ChatMessageEntity(
-        message: "Hi there",
-        createdAt: 123242342,
-        id: 1,
-        author: Author(name: "Poja")),
-        */
-  ];
+  List<ChatMessageEntity> _messages = [];
+  final ImageRepository _imageRepository = ImageRepository();
 
   @override
   void initState() {
     super.initState();
     _loadInitialMessage();
+    _imageRepository.getNetworkImages();
   }
 
   _loadInitialMessage() async {
@@ -64,7 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final username = ModalRoute.of(context)!.settings.arguments as String;
-
+    _imageRepository.getNetworkImages();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -81,6 +65,18 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
+          FutureBuilder(
+            future: _imageRepository.getNetworkImages(),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<ImageEntity>> snapshot) {
+              if (snapshot.hasData) {
+                return Image.network(snapshot.data![0].urlSmallSize);
+              } else if (snapshot.hasError) {
+                return Text('${snapshot.error}');
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
           Expanded(
             child: ListView.builder(
               itemBuilder: (context, index) {
