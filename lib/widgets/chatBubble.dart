@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:linkedin/services/auth_service.dart';
 import 'package:linkedin/model/ChatMessageEntity.dart';
 
 class ChatBubble extends StatelessWidget {
   final Alignment alignment;
   final ChatMessageEntity chatMessage;
+
   const ChatBubble(
       {Key? key, required this.alignment, required this.chatMessage})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    bool isAuthor = chatMessage.author.name == context.read<AuthService>().user;
     return Align(
       alignment: alignment,
       child: Container(
@@ -18,7 +23,7 @@ class ChatBubble extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
         decoration: BoxDecoration(
-          color: Colors.grey,
+          color: isAuthor ? Theme.of(context).primaryColor : Colors.black54,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(

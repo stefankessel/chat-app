@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:linkedin/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
-import 'Counter.dart';
 import 'LoginScreen.dart';
 import 'ChatScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthService>(create: (_) => AuthService()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

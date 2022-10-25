@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:linkedin/services/auth_service.dart';
 import 'package:linkedin/model/ChatMessageEntity.dart';
 import 'package:linkedin/widgets/modalBottomImageContainer.dart';
 
@@ -22,7 +25,7 @@ class _ChatInputState extends State<ChatInput> {
         imageURL: _imageSelected,
         createdAt: DateTime.now().microsecondsSinceEpoch,
         id: 123,
-        author: Author(name: "Stefan"),
+        author: Author(name: context.read<AuthService>().user),
       );
       if (_imageSelected.isNotEmpty) {
         newMessage.imageURL = _imageSelected;
